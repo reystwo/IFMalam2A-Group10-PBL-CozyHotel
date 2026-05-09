@@ -39,11 +39,12 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+            'role' => 'customer',
         ]);
 
         Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success', 'Account created successfully! Welcome to CozyHotel.');
+        return redirect()->route('customer.home')->with('success', 'Account created successfully! Welcome to CozyHotel.');
     }
 
     /**
@@ -61,8 +62,13 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('dashboard')
-                ->with('success', 'Welcome back to CozyHotel!');
+            $user = Auth::user();
+            
+            if ($user->role === 'admin') {
+                return redirect()->route('dashboard')->with('success', 'Welcome back Admin!');
+            }
+
+            return redirect()->route('customer.home')->with('success', 'Welcome back to CozyHotel!');
         }
 
         throw ValidationException::withMessages([
