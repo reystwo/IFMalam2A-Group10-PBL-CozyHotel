@@ -17,6 +17,36 @@ class AuthController extends Controller
     }
 
     /**
+     * Show the registration form.
+     */
+    public function showRegister()
+    {
+        return view('auth.register');
+    }
+
+    /**
+     * Handle a registration request.
+     */
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user = \App\Models\User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+        ]);
+
+        Auth::login($user);
+
+        return redirect()->route('dashboard')->with('success', 'Account created successfully! Welcome to CozyHotel.');
+    }
+
+    /**
      * Handle an authentication attempt.
      */
     public function login(Request $request)

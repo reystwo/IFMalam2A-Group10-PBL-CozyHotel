@@ -81,7 +81,7 @@
         <p class="mt-8 text-center text-sm text-slate-500">
             Don't have an account? 
             <a href="{{ route('register') }}" class="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
-                Create an account
+                Sign Up Account
             </a>
         </p>
     @endif
