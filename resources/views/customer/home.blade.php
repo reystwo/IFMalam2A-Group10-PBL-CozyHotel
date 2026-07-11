@@ -53,6 +53,11 @@
                                     <option>2 Adults</option>
                                     <option>1 Adult</option>
                                     <option>2 Adults, 1 Child</option>
+<<<<<<< HEAD
+=======
+                                    <option>2 Adults, 2 Childs</option>
+                                    <option>Other</option>
+>>>>>>> c31c07a (implementasi crud dan finalisasi fitur admin lainnya)
                                 </select>
                             </div>
                         </div>
@@ -67,6 +72,10 @@
                                     <option>Standard</option>
                                     <option>Deluxe</option>
                                     <option>Suite</option>
+<<<<<<< HEAD
+=======
+                                    <option>Family</option>
+>>>>>>> c31c07a (implementasi crud dan finalisasi fitur admin lainnya)
                                 </select>
                             </div>
                         </div>

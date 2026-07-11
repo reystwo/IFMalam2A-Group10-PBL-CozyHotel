@@ -1,5 +1,5 @@
 <div class="relative z-10 flex-shrink-0 flex h-16 bg-white border-b border-slate-200">
-    <button type="button" 
+    <button type="button"
             class="px-4 border-r border-slate-200 text-slate-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
             @click="sidebarOpen = true">
         <span class="sr-only">Open sidebar</span>
@@ -25,7 +25,7 @@
         <div class="ml-4 flex items-center md:ml-6 space-x-4">
             <!-- Notifications -->
             <div class="relative" x-data="{ open: false }">
-                <button type="button" 
+                <button type="button"
                         class="bg-white p-1 rounded-full text-slate-400 hover:text-slate-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 relative"
                         @click="open = !open"
                         @click.away="open = false">
@@ -37,14 +37,14 @@
                 </button>
 
                 <!-- Notification Dropdown -->
-                <div x-show="open" 
-                     x-transition:enter="transition ease-out duration-100" 
-                     x-transition:enter-start="transform opacity-0 scale-95" 
-                     x-transition:enter-end="transform opacity-100 scale-100" 
-                     x-transition:leave="transition ease-in duration-75" 
-                     x-transition:leave-start="transform opacity-100 scale-100" 
-                     x-transition:leave-end="transform opacity-0 scale-95" 
-                     class="origin-top-right absolute right-0 mt-2 w-80 rounded-2xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 border border-slate-100 overflow-hidden" 
+                <div x-show="open"
+                     x-transition:enter="transition ease-out duration-100"
+                     x-transition:enter-start="transform opacity-0 scale-95"
+                     x-transition:enter-end="transform opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-75"
+                     x-transition:leave-start="transform opacity-100 scale-100"
+                     x-transition:leave-end="transform opacity-0 scale-95"
+                     class="origin-top-right absolute right-0 mt-2 w-80 rounded-2xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 border border-slate-100 overflow-hidden"
                      style="display: none;">
                     <div class="px-4 py-3 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
                         <h3 class="text-xs font-bold text-slate-900 uppercase tracking-widest">Notifications</h3>
@@ -103,28 +103,30 @@
             <!-- Profile dropdown -->
             <div class="ml-3 relative" x-data="{ open: false }">
                 <div>
-                    <button type="button" 
-                            class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" 
+                    <button type="button"
+                            class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             @click="open = !open"
                             @click.away="open = false">
                         <span class="sr-only">Open user menu</span>
                         <img class="h-8 w-8 rounded-full border border-slate-200" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&color=7F9CF5&background=EBF4FF" alt="">
                     </button>
                 </div>
-                <div x-show="open" 
-                     x-transition:enter="transition ease-out duration-100" 
-                     x-transition:enter-start="transform opacity-0 scale-95" 
-                     x-transition:enter-end="transform opacity-100 scale-100" 
-                     x-transition:leave="transition ease-in duration-75" 
-                     x-transition:leave-start="transform opacity-100 scale-100" 
-                     x-transition:leave-end="transform opacity-0 scale-95" 
-                     class="origin-top-right absolute right-0 mt-2 w-48 rounded-2xl shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 border border-slate-100" 
+                <div x-show="open"
+                     x-transition:enter="transition ease-out duration-100"
+                     x-transition:enter-start="transform opacity-0 scale-95"
+                     x-transition:enter-end="transform opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-75"
+                     x-transition:leave-start="transform opacity-100 scale-100"
+                     x-transition:leave-end="transform opacity-0 scale-95"
+                     class="origin-top-right absolute right-0 mt-2 w-48 rounded-2xl shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 border border-slate-100"
                      role="menu">
                     <a href="#" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 font-medium" role="menuitem">Your Profile</a>
                     <a href="#" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 font-medium" role="menuitem">Settings</a>
-                    <form method="POST" action="#">
-                        @csrf
-                        <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 font-medium" role="menuitem">Sign out</button>
+                    <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                        <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 font-medium" role="menuitem">
+                        Sign out
+                        </button>
                     </form>
                 </div>
             </div>
