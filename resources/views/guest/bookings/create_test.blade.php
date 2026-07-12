@@ -1,5 +1,5 @@
 <x-layouts.customer>
-    <x-slot:title>Complete Your Reservation</x-slot:title>
+    <x-slot:title>Complete Your Reservation</x-slot>
 
     <div class="relative pt-40 pb-32 bg-slate-50 min-h-screen">
         <!-- Background accents -->

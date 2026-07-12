@@ -2,11 +2,11 @@
 
 @php
     $statusColors = [
-        'Pending' => 'bg-amber-50 text-amber-600 border-amber-100',
-        'Confirmed' => 'bg-emerald-50 text-emerald-600 border-emerald-100',
-        'Checked In' => 'bg-indigo-50 text-indigo-600 border-indigo-100',
-        'Completed' => 'bg-slate-50 text-slate-600 border-slate-200',
-        'Cancelled' => 'bg-rose-50 text-rose-600 border-rose-100',
+        'pending' => 'bg-amber-50 text-amber-600 border-amber-100',
+        'confirmed' => 'bg-emerald-50 text-emerald-600 border-emerald-100',
+        'checked_in' => 'bg-indigo-50 text-indigo-600 border-indigo-100',
+        'completed' => 'bg-slate-50 text-slate-600 border-slate-200',
+        'cancelled' => 'bg-rose-50 text-rose-600 border-rose-100',
     ];
     $statusColor = $statusColors[$booking['status']] ?? 'bg-slate-50 text-slate-600 border-slate-200';
 @endphp
@@ -14,10 +14,10 @@
 <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden group hover:shadow-2xl hover:shadow-indigo-100 transition-all duration-500 flex flex-col md:flex-row">
     <!-- Room Image Section -->
     <div class="md:w-72 h-64 md:h-auto overflow-hidden relative">
-        <img src="{{ $booking['room_image'] }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+        <img src="{{ $booking['room_image'] }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $booking['room_title'] }}">
         <div class="absolute top-6 left-6">
             <span class="inline-flex items-center px-4 py-2 rounded-2xl border text-[10px] font-black uppercase tracking-widest shadow-sm backdrop-blur-md {{ $statusColor }}">
-                {{ $booking['status'] }}
+                {{ $booking['status_label'] ?? $booking['status'] }}
             </span>
         </div>
     </div>
@@ -35,7 +35,7 @@
             </div>
             <div class="text-left md:text-right">
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Payment</p>
-                <p class="text-2xl font-black text-indigo-600 tracking-tighter">${{ number_format($booking['total_price'], 2) }}</p>
+                <p class="text-2xl font-black text-indigo-600 tracking-tighter">{{ $booking['total_price_formatted'] }}</p>
             </div>
         </div>
 
@@ -51,11 +51,11 @@
             </div>
             <div>
                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Duration</span>
-                <span class="text-sm font-bold text-slate-700">{{ $booking['duration'] }} Nights</span>
+                <span class="text-sm font-bold text-slate-700">{{ $booking['nights'] }} Nights</span>
             </div>
             <div>
-                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Guests</span>
-                <span class="text-sm font-bold text-slate-700">{{ $booking['guests'] }} People</span>
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Guest</span>
+                <span class="text-sm font-bold text-slate-700">{{ $booking['guest_name'] }}</span>
             </div>
         </div>
 
@@ -63,16 +63,18 @@
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-auto">
             <div class="flex items-center gap-3">
                 <span class="inline-flex items-center px-3 py-1 bg-indigo-50 text-indigo-700 text-[10px] font-black rounded-lg uppercase tracking-wider border border-indigo-100/50">
-                    DP: Paid
+                    {{ ucfirst(str_replace('_', ' ', $booking['status'] ?? 'pending')) }}
                 </span>
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Confirmed via Credit Card</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+                    {{ $booking['guest_email'] }}
+                </span>
             </div>
 
             <div class="flex items-center gap-3 w-full sm:w-auto">
-                @if($booking['status'] === 'Pending')
+                @if($booking['status'] === 'pending' || $booking['status'] === 'confirmed')
                     <form action="{{ route('guest.bookings.cancel', $booking['id']) }}" method="POST" class="flex-1 sm:flex-none">
                         @csrf
-                        <button type="submit" class="w-full px-6 py-3.5 text-xs font-black text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-2xl transition-all active:scale-95">
+                        <button type="submit" class="w-full px-6 py-3.5 text-xs font-black text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-2xl transition-all active:scale-95" onclick="return confirm('Are you sure you want to cancel this booking?')">
                             Cancel
                         </button>
                     </form>

@@ -1,8 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\AuthController;
+
+// ============== IMPORT GUEST CONTROLLERS ==============
+use App\Http\Controllers\Guest\RoomController as GuestRoomController;
+use App\Http\Controllers\Guest\BookingController as GuestBookingController;
 
 Route::get('/', function () {
     return view('home');
@@ -50,94 +53,37 @@ Route::post('/transactions', [TransactionController::class, 'store'])->name('tra
 
 Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log');
 
-// Customer Specific Routes
+// ============================================================
+// CUSTOMER SPECIFIC ROUTES (Authenticated)
+// ============================================================
 Route::middleware(['auth'])->group(function () {
-    Route::get('/home', function () {
-        return view('customer.home');
-    })->name('customer.home');
 
-    Route::get('/rooms-list', function () {
-        return view('guest.rooms.index');
-    })->name('guest.rooms.index');
+    // ----- HOME PAGE -----
+    Route::get('/home', [GuestRoomController::class, 'index'])->name('customer.home');
 
-    Route::get('/rooms-list/{id}', function ($id) {
-        return view('guest.rooms.show', ['id' => $id]);
-    })->name('guest.rooms.show');
+    // ----- ROOM LIST PAGE -----
+    // PERBAIKAN: Menggunakan controller untuk mengambil data rooms
+    Route::get('/rooms-list', [GuestRoomController::class, 'list'])->name('guest.rooms.index');
 
-    Route::get('/book-room/{id}', function ($id) {
-        return view('guest.bookings.create', ['id' => $id]);
-    })->name('guest.booking.create');
+    // ----- ROOM DETAIL PAGE -----
+    Route::get('/rooms-list/{id}', [GuestRoomController::class, 'show'])->name('guest.rooms.show');
 
-    Route::post('/book-room', function () {
-        // Logika simpan booking akan diimplementasikan di Controller nanti
-        return redirect()->route('guest.bookings.index')->with('success', 'Reservation created successfully!');
-    })->name('guest.booking.store');
+    // ----- BOOKING ROUTES -----
+    Route::get('/book-room/{id}', [GuestBookingController::class, 'create'])->name('guest.booking.create');
+    Route::post('/book-room', [GuestBookingController::class, 'store'])->name('guest.booking.store');
+    Route::get('/my-bookings', [GuestBookingController::class, 'index'])->name('guest.bookings.index');
+    Route::get('/my-bookings/{id}', [GuestBookingController::class, 'show'])->name('guest.bookings.show');
+    Route::post('/my-bookings/{id}/cancel', [GuestBookingController::class, 'cancel'])->name('guest.bookings.cancel');
+    Route::get('/my-bookings/{id}/invoice', [GuestBookingController::class, 'invoice'])->name('guest.bookings.invoice');
 
-    Route::get('/my-bookings', function () {
-        return view('guest.bookings.index');
-    })->name('guest.bookings.index');
-
-    Route::get('/my-bookings/{id}', function ($id) {
-        return view('guest.bookings.show', ['id' => $id]);
-    })->name('guest.bookings.show');
-
-    Route::post('/my-bookings/{id}/cancel', function ($id) {
-        return redirect()->route('guest.bookings.index')->with('info', 'Booking cancelled.');
-    })->name('guest.bookings.cancel');
-
-    Route::get('/my-bookings/{id}/invoice', function ($id) {
-        return "Invoice for booking #$id";
-    })->name('guest.bookings.invoice');
-
+    // ----- PROFILE PAGE -----
     Route::get('/profile', function () {
         return view('pages.profile.edit');
     })->name('profile');
 });
 
-// Customer Specific Routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/home', function () {
-        return view('customer.home');
-    })->name('customer.home');
-
-    Route::get('/rooms-list', function () {
-        return view('guest.rooms.index');
-    })->name('guest.rooms.index');
-
-    Route::get('/rooms-list/{id}', function ($id) {
-        return view('guest.rooms.show', ['id' => $id]);
-    })->name('guest.rooms.show');
-
-    Route::get('/book-room/{id}', function ($id) {
-        return view('guest.bookings.create', ['id' => $id]);
-    })->name('guest.booking.create');
-
-    Route::post('/book-room', function () {
-        // Logika simpan booking akan diimplementasikan di Controller nanti
-        return redirect()->route('guest.bookings.index')->with('success', 'Reservation created successfully!');
-    })->name('guest.booking.store');
-
-    Route::get('/my-bookings', function () {
-        return view('guest.bookings.index');
-    })->name('guest.bookings.index');
-
-    Route::get('/my-bookings/{id}', function ($id) {
-        return view('guest.bookings.show', ['id' => $id]);
-    })->name('guest.bookings.show');
-
-    Route::post('/my-bookings/{id}/cancel', function ($id) {
-        return redirect()->route('guest.bookings.index')->with('info', 'Booking cancelled.');
-    })->name('guest.bookings.cancel');
-
-    Route::get('/my-bookings/{id}/invoice', function ($id) {
-        return "Invoice for booking #$id";
-    })->name('guest.bookings.invoice');
-
-    Route::get('/profile', function () {
-        return view('pages.profile.edit');
-    })->name('profile');
-});
-
+// ----- INVOICE PAGE -----
 Route::get('/invoices/{id}', function ($id) {
     return view('pages.invoice', ['id' => $id]);
 })->name('invoices.show');
+

@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Booking extends Model
+class GuestBooking extends Model
 {
     use HasFactory;
+
+    protected $table = 'bookings';
 
     protected $fillable = [
         'user_id',
@@ -24,8 +26,8 @@ class Booking extends Model
     ];
 
     protected $casts = [
-        'check_in' => 'datetime',
-        'check_out' => 'datetime',
+        'check_in' => 'date',
+        'check_out' => 'date',
         'total_price' => 'decimal:2',
     ];
 
@@ -73,39 +75,32 @@ class Booking extends Model
     }
 
     /**
-     * Get all payment transactions for this booking.
+     * Get status badge color.
      */
-    public function transactions()
+    public function getStatusBadgeColorAttribute(): string
     {
-        return $this->hasMany(Transaction::class);
+        return match($this->status) {
+            'pending' => 'bg-amber-50 text-amber-600 border-amber-100',
+            'confirmed' => 'bg-emerald-50 text-emerald-600 border-emerald-100',
+            'checked_in' => 'bg-indigo-50 text-indigo-600 border-indigo-100',
+            'completed' => 'bg-slate-50 text-slate-600 border-slate-200',
+            'cancelled' => 'bg-rose-50 text-rose-600 border-rose-100',
+            default => 'bg-slate-50 text-slate-600 border-slate-200',
+        };
     }
 
     /**
-     * Get total amount paid.
+     * Get status label.
      */
-    public function getPaidAmountAttribute()
+    public function getStatusLabelAttribute(): string
     {
-        return $this->transactions()->sum('amount');
-    }
-
-    /**
-     * Get remaining balance.
-     */
-    public function getBalanceAttribute()
-    {
-        return $this->total_price - $this->paid_amount;
-    }
-
-    /**
-     * Get payment status.
-     */
-    public function getPaymentStatusAttribute()
-    {
-        if ($this->paid_amount >= $this->total_price) {
-            return 'fully_paid';
-        } elseif ($this->paid_amount > 0) {
-            return 'dp_paid';
-        }
-        return 'unpaid';
+        return match($this->status) {
+            'pending' => 'Pending',
+            'confirmed' => 'Confirmed',
+            'checked_in' => 'Checked In',
+            'completed' => 'Completed',
+            'cancelled' => 'Cancelled',
+            default => 'Unknown',
+        };
     }
 }
